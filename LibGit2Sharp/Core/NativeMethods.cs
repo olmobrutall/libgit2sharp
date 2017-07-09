@@ -24,7 +24,7 @@ namespace LibGit2Sharp.Core
         #pragma warning disable 0414
         private static readonly NativeShutdownObject shutdownObject;
         #pragma warning restore 0414
-
+        
         static NativeMethods()
         {
             if (Platform.OperatingSystem == OperatingSystemType.Windows)
@@ -1600,6 +1600,18 @@ namespace LibGit2Sharp.Core
         [DllImport(libgit2)]
         internal static extern void git_strarray_free(
             ref GitStrArray array);
+
+        [DllImport(libgit2)]
+        static extern unsafe int git_submodule_add_setup(
+           out git_submodule* reference,
+           git_repository* repo,
+           [CustomMarshaler(typeof(StrictUtf8Marshaler), typeof(string))] byte* url,
+           [CustomMarshaler(typeof(StrictFilePathMarshaler), typeof(FilePath))] byte* path,
+           int use_gitlink);
+
+        [DllImport(libgit2)]
+        internal static extern unsafe int git_submodule_add_finalize(
+            git_submodule* reference);
 
         [DllImport(libgit2)]
         private static extern unsafe int git_submodule_lookup(
