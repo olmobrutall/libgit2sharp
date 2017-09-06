@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net40;netstandard2.0</TargetFrameworks>
+    <TargetFrameworks>net40</TargetFrameworks>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <Description>LibGit2Sharp brings all the might and speed of libgit2, a native Git implementation, to the managed world of .Net and Mono.</Description>
     <Company>LibGit2Sharp contributors</Company>
@@ -19,17 +19,22 @@
   <PropertyGroup>
     <SourceLinkCreate Condition="'$(TRAVIS)' == 'true'">false</SourceLinkCreate>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net40|AnyCPU'">
+    <WarningLevel>2</WarningLevel>
+  </PropertyGroup>
 
   <ItemGroup>
     <CodeAnalysisDictionary Include="CustomDictionary.xml" />
     <None Include="Core\Handles\Objects.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>Objects.cs</LastGenOutput>
     </None>
     <None Include="..\README.md" Pack="true" PackagePath="App_Readme\" />
     <None Include="..\LICENSE.md" Pack="true" PackagePath="App_Readme\" />
     <None Include="..\CHANGES.md" Pack="true" PackagePath="App_Readme\" />
     <Compile Update="Core\Handles\Objects.cs" DependentUpon="Objects.tt" />
   </ItemGroup>
+
   <ItemGroup>
     <PackageReference Include="LibGit2Sharp.NativeBinaries" Version="[1.0.185]" PrivateAssets="contentFiles" />
     <PackageReference Include="SourceLink.Create.GitHub" Version="2.2.0" PrivateAssets="all" />
