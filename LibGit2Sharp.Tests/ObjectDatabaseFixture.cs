@@ -61,7 +61,7 @@ namespace LibGit2Sharp.Tests
 
                 GitObjectMetadata blobMetadata = repo.ObjectDatabase.RetrieveObjectMetadata(blob.Id);
                 Assert.Equal(blobMetadata.Size, blob.Size);
-                Assert.Equal(blobMetadata.Type, ObjectType.Blob);
+                Assert.Equal(ObjectType.Blob, blobMetadata.Type);
 
                 Blob fetchedBlob = repo.Lookup<Blob>(blob.Id);
                 Assert.Equal(blobMetadata.Size, fetchedBlob.Size);
@@ -118,6 +118,31 @@ namespace LibGit2Sharp.Tests
                     Blob blob = repo.ObjectDatabase.CreateBlob(stream, hintPath);
                     Assert.Equal(expectedSha, blob.Sha);
                 }
+            }
+        }
+
+        [Fact]
+        public void CanWriteABlobFromAByteArray()
+        {
+            var ba = Encoding.ASCII.GetBytes("libgit2\r\n");
+
+            using (var repo = new Repository(InitNewRepository()))
+            {
+                var id = repo.ObjectDatabase.Write<Blob>(ba);
+                Assert.Equal(new ObjectId("99115ea359379a218c47cffc83cd0af8c91c4061"), id);
+            }
+        }
+
+        [Fact]
+        public void CanWriteABlobFromAStream()
+        {
+            var ba = Encoding.ASCII.GetBytes("libgit2\r\n");
+
+            using (var stream = new MemoryStream(ba))
+            using (var repo = new Repository(InitNewRepository()))
+            {
+                var id = repo.ObjectDatabase.Write<Blob>(stream, stream.Length);
+                Assert.Equal(new ObjectId("99115ea359379a218c47cffc83cd0af8c91c4061"), id);
             }
         }
 
@@ -449,7 +474,7 @@ namespace LibGit2Sharp.Tests
                 {
                     Blob blob = repo.ObjectDatabase.CreateBlob(stream);
                     Assert.Equal(6, blob.Size);
-                    Assert.Equal(true, blob.IsBinary);
+                    Assert.True(blob.IsBinary);
                 }
             }
         }
